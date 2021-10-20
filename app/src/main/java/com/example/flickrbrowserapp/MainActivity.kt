@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rvAdapter: RVAdapter
     lateinit var lastList: ArrayList<Photo>
     lateinit var flickr: Flickr
+    var keyword=""
     var imagesNumber=24
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity() {
 
         //initialize shared preference
         PreferenceHelper.init(this)
+
+        //to keep the list of liked photos we have to check if sharedpreference is not empty
 
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -53,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
                 //call the api interface to retrieve the data
                 createApiInterface(binding.etSearch.text.toString())
+                keyword=binding.etSearch.text.toString()
             }
             else
                 Toast.makeText(this,"Type something",Toast.LENGTH_SHORT).show()
@@ -71,7 +76,10 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.mainActivity-> startActivity(Intent(this,MainActivity::class.java))
-                R.id.listView-> startActivity(Intent(this,ListActivity::class.java))
+                R.id.listView-> { val intent =Intent(this, ListActivity::class.java)
+                    intent.putExtra("key",keyword) //send the keyword
+                    startActivity(intent)
+                }
                 R.id.likedActivity-> startActivity(Intent(this,SavedActivity::class.java))
             }
             true
@@ -107,6 +115,7 @@ class MainActivity : AppCompatActivity() {
 
                 flickr= response.body()!!
                 lastList=flickr.photos?.photo!!
+                Log.d("67des","size ${lastList.size}")
                 setRV(flickr.photos?.photo!!)
                 // myRv.scrollToPosition( rvAdapter.getItemCount() - 1)
             }
@@ -126,6 +135,7 @@ class MainActivity : AppCompatActivity() {
             rvAdapter =RVAdapter(photos, this)
             myRv.adapter = rvAdapter
             myRv.layoutManager = GridLayoutManager(applicationContext,2)
+
         }
         else
         {

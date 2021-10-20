@@ -37,9 +37,16 @@ class ListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pager)
 
+        //get the keyword
+        val keyword= intent.getStringExtra("key") //get the keyword
+
         setBottomNivigation()
 
-        createApiInterface("space")
+        if (keyword!!.isNotEmpty()) {
+            createApiInterface(keyword)
+        }
+        else
+            createApiInterface("Cats")//default search
 
     }
 

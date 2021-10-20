@@ -45,7 +45,10 @@ class SavedActivity : AppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.mainActivity-> startActivity(Intent(this,MainActivity::class.java))
-                R.id.listView-> startActivity(Intent(this,ListActivity::class.java))
+                R.id.listView-> { val intent =Intent(this, ListActivity::class.java)
+                    intent.putExtra("key","cats") //send the keyword
+                    startActivity(intent)
+                }
                 R.id.likedActivity-> startActivity(Intent(this,SavedActivity::class.java))
             }
             true

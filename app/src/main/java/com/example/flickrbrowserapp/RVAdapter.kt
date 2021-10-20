@@ -33,6 +33,12 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context): Rec
             holder.binding.imgLike.isChecked = true
         }
 
+        //check if in favorite list check
+        if(Constants.liked.contains(photos[position])) {
+            holder.binding.imgLike.isChecked = true
+            photos[position].checked==true
+        }
+
         holder.binding.apply {
             tvTitle.text=title
             Glide.with(context)
