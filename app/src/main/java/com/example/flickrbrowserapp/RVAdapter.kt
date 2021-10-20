@@ -41,7 +41,6 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context): Rec
             intent.putExtra("photo_link","https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_n.jpg")
             context.startActivity(intent)
         }
-
         holder.binding.imgLike.setOnClickListener{
             //if checked add it to the checked list
           if(holder.binding.imgLike.isChecked){
@@ -58,6 +57,11 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context): Rec
           }
 
          }
+        holder.binding.tvTitle.setOnClickListener{
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.flickr.com/photos/${owner}/${id} "))
+            context.startActivity(browserIntent)
+        }
+
     }
 
     override fun getItemCount() = photos.size

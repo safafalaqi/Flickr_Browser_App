@@ -34,19 +34,8 @@ class MainActivity : AppCompatActivity() {
         //hide action bar
         getSupportActionBar()?.hide()
 
-
-
-
         //initialize shared preference
         PreferenceHelper.init(this)
-
-        //check if last search in shared preference if yes set rv
-        lastList= PreferenceHelper.getItemList(PreferenceHelper.LAST_PHOTOS_LIST)
-
-        //if not empty set RV
-        if(lastList!=null) {
-          setRV(lastList)
-        }
 
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -56,8 +45,11 @@ class MainActivity : AppCompatActivity() {
             if (binding.etSearch.text.isNotEmpty()) {
 
                 //if the user put the number of images change to the new number
-                if(binding.etNumber.text.isNotEmpty())
+                if(binding.etNumber.text.isNotEmpty()){
                     imagesNumber=binding.etNumber.text.toString().toInt()
+                    //change number hint
+                    binding.etNumber.hint=imagesNumber.toString()
+                }
 
                 //call the api interface to retrieve the data
                 createApiInterface(binding.etSearch.text.toString())
@@ -67,7 +59,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         setBottomNivigation()
-
 
     }
 
@@ -100,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         /*tags= A comma-delimited list of tags. Photos with one or more of the
         tags listed will be returned.*/
+
 
         val call: Call<Flickr?>? = apiInterface!!.getPhotos(
             "?method=${Constants.METHOD_SEARCH}&api_key=${Constants.API_KEY}" +
@@ -155,5 +147,17 @@ class MainActivity : AppCompatActivity() {
         PreferenceHelper.setItemList(PreferenceHelper.LAST_PHOTOS_LIST, lastList)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        //check if last search in shared preference if yes set rv
+        lastList= PreferenceHelper.getItemList(PreferenceHelper.LAST_PHOTOS_LIST)
+
+        //if not empty set RV
+        if(lastList!=null) {
+            setRV(lastList)
+        }
+
+    }
 
 }

@@ -60,7 +60,6 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.search_menu, menu)
         val menuItem = menu?.findItem(R.id.action_search)
@@ -96,7 +95,6 @@ class ListActivity : AppCompatActivity() {
         }
         return true
     }
-
 
     fun createApiInterface(keyword: String){
 
@@ -134,6 +132,7 @@ class ListActivity : AppCompatActivity() {
             }
         })
     }
+
     fun setRV() {
         myRv = findViewById(R.id.rvPhotosPager)
         val snapHelper: SnapHelper = LinearSnapHelper()
