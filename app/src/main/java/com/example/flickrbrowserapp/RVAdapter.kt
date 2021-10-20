@@ -29,6 +29,10 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context): Rec
         val secret = photos[position].secret
         val server = photos[position].server
 
+        if(photos[position].checked==true) {
+            holder.binding.imgLike.isChecked = true
+        }
+
         holder.binding.apply {
             tvTitle.text=title
             Glide.with(context)
