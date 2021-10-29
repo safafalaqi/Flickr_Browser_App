@@ -10,11 +10,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.flickrbrowserapp.databinding.ItemRowBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
-class RVAdapter(private val photos: ArrayList<Photo>, val context: Context): RecyclerView.Adapter<RVAdapter.ItemViewHolder>() {
+class RVAdapter(private val photos: ArrayList<Photo>, val context: Context ): RecyclerView.Adapter<RVAdapter.ItemViewHolder>() {
     class ItemViewHolder(val binding: ItemRowBinding) : RecyclerView.ViewHolder(binding.root)
     val liked=ArrayList<Photo>()
+
+    private val photoDao by lazy{ PhotoDatabase.getInstance(context).photoDao() }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
             ItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -32,12 +39,17 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context): Rec
         if(photos[position].checked==true) {
             holder.binding.imgLike.isChecked = true
         }
+        var list:ArrayList<Photo>?=null
+        CoroutineScope(Dispatchers.IO).launch {
+            list= photoDao.getPhotos().toArrayList()
 
-        //check if in favorite list check
-        if(Constants.liked.contains(photos[position])) {
-            holder.binding.imgLike.isChecked = true
-            photos[position].checked==true
+            //check if in favorite list check
+            if(list!!.contains(photos[position])) {
+                holder.binding.imgLike.isChecked = true
+                photos[position].checked==true
+            }
         }
+
 
         holder.binding.apply {
             tvTitle.text=title
@@ -56,14 +68,24 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context): Rec
           if(holder.binding.imgLike.isChecked){
               photos[position].checked=true
               holder.binding.imgLike.isChecked=true
-              Constants.liked.add(photos[position])
-          PreferenceHelper.setItemList(PreferenceHelper.PHOTOS_LIST,  Constants.liked)
+              CoroutineScope(Dispatchers.IO).launch {
+                  photoDao.addPhoto(Photo(photos[position].farm!!,photos[position].id!!,photos[position].isfamily
+                      ,photos[position].isfriend,photos[position].ispublic,photos[position].owner,photos[position].secret
+                      ,photos[position].server,photos[position].title,photos[position].checked))
+              }
+             // Constants.liked.add(photos[position])
+         // PreferenceHelper.setItemList(PreferenceHelper.PHOTOS_LIST,  Constants.liked)
           }
         else {
               photos[position].checked=false
               holder.binding.imgLike.isChecked=false
-              Constants.liked.remove(photos[position])
-              PreferenceHelper.setItemList(PreferenceHelper.PHOTOS_LIST,  Constants.liked)
+              CoroutineScope(Dispatchers.IO).launch {
+                  photoDao.deletePhoto(Photo(photos[position].farm!!,photos[position].id!!,photos[position].isfamily
+                  ,photos[position].isfriend,photos[position].ispublic,photos[position].owner,photos[position].secret
+                  ,photos[position].server,photos[position].title,photos[position].checked))
+              }
+              //Constants.liked.remove(photos[position])
+              //PreferenceHelper.setItemList(PreferenceHelper.PHOTOS_LIST,  Constants.liked)
           }
 
          }
@@ -86,5 +108,7 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context): Rec
         diffResult.dispatchUpdatesTo(this)
     }
 
-
+    fun <T> List<T>.toArrayList(): ArrayList<T>{
+        return ArrayList(this)
+    }
 }

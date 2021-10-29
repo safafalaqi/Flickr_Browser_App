@@ -13,25 +13,37 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.flickrbrowserapp.databinding.ActivityMainBinding
 import com.example.flickrbrowserapp.databinding.ItemRowBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SavedActivity : AppCompatActivity() {
     private lateinit var myRv: RecyclerView
     private lateinit var rvAdapter: RVAdapter
-    lateinit var flickr: ArrayList<Photo>
+   lateinit var flickr: List<Photo>
+    private val photoDao by lazy{ PhotoDatabase.getInstance(this).photoDao() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_liked)
         //get from shared preference
-        flickr= PreferenceHelper.getItemList(PreferenceHelper.PHOTOS_LIST)
+        //flickr= PreferenceHelper.getItemList(PreferenceHelper.PHOTOS_LIST)
+        //get liked from database
 
+        CoroutineScope(Dispatchers.IO).launch {
+            flickr = photoDao.getPhotos()
 
-        //if not empty set RV
-        if(flickr!=null) {
-            myRv = findViewById(R.id.rvPhotosPager)
-            rvAdapter = RVAdapter(flickr, this)
-            myRv.adapter = rvAdapter
-            myRv.layoutManager = GridLayoutManager(applicationContext,3)
+            withContext(Dispatchers.Main) {
+                //if not empty set RV
+                if (flickr != null) {
+                    myRv = findViewById(R.id.rvPhotosPager)
+                    rvAdapter = RVAdapter(flickr.toArrayList(), this@SavedActivity)
+                    myRv.adapter = rvAdapter
+                    myRv.layoutManager = GridLayoutManager(applicationContext, 3)
+                }
+            }
+
         }
         setBottomNivigation()
     }
@@ -54,5 +66,9 @@ class SavedActivity : AppCompatActivity() {
             true
         }
 
+    }
+
+    fun <T> List<T>.toArrayList(): ArrayList<T>{
+        return ArrayList(this)
     }
 }

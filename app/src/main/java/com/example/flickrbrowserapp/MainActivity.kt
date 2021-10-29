@@ -39,8 +39,6 @@ class MainActivity : AppCompatActivity() {
         //initialize shared preference
         PreferenceHelper.init(this)
 
-        //to keep the list of liked photos we have to check if sharedpreference is not empty
-
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -159,7 +157,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         //check if last search in shared preference if yes set rv
         lastList= PreferenceHelper.getItemList(PreferenceHelper.LAST_PHOTOS_LIST)
 
@@ -167,7 +164,6 @@ class MainActivity : AppCompatActivity() {
         if(lastList!=null) {
             setRV(lastList)
         }
-
     }
 
 }

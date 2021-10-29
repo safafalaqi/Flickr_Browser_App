@@ -1,16 +1,21 @@
 package com.example.flickrbrowserapp
 
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity(tableName = "Photos")
 data class Photo(
     @SerializedName("farm")
     val farm: Int?=null,
     @SerializedName("id")
-    val id: String?=null,
+    @PrimaryKey
+    val id: String,
     @SerializedName("isfamily")
-    val isfamily: Int?=null,
+     val isfamily: Int?=null,
     @SerializedName("isfriend")
-    val isfriend: Int?=null,
+     val isfriend: Int?=null,
     @SerializedName("ispublic")
     val ispublic: Int?=null,
     @SerializedName("owner")
