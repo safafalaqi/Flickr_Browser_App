@@ -73,8 +73,8 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context ): Re
                       ,photos[position].isfriend,photos[position].ispublic,photos[position].owner,photos[position].secret
                       ,photos[position].server,photos[position].title,photos[position].checked))
               }
-             // Constants.liked.add(photos[position])
-         // PreferenceHelper.setItemList(PreferenceHelper.PHOTOS_LIST,  Constants.liked)
+              Constants.liked.add(photos[position])
+         PreferenceHelper.setItemList(PreferenceHelper.PHOTOS_LIST,  Constants.liked)
           }
         else {
               photos[position].checked=false
@@ -84,8 +84,8 @@ class RVAdapter(private val photos: ArrayList<Photo>, val context: Context ): Re
                   ,photos[position].isfriend,photos[position].ispublic,photos[position].owner,photos[position].secret
                   ,photos[position].server,photos[position].title,photos[position].checked))
               }
-              //Constants.liked.remove(photos[position])
-              //PreferenceHelper.setItemList(PreferenceHelper.PHOTOS_LIST,  Constants.liked)
+              Constants.liked.remove(photos[position])
+              PreferenceHelper.setItemList(PreferenceHelper.PHOTOS_LIST,  Constants.liked)
           }
 
          }
